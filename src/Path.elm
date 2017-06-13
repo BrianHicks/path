@@ -129,6 +129,11 @@ push new base =
             base
 
 
+pop : Path -> Path
+pop =
+    push (relative "..")
+
+
 toString : Path -> Result Error String
 toString path =
     case path of
