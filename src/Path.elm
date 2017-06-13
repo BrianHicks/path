@@ -38,8 +38,40 @@ parse raw =
 remove `.`s.
 -}
 resolveTraversal : Path -> Path
-resolveTraversal =
-    identity
+resolveTraversal path =
+    let
+        simplify : List String -> Result Error (List String)
+        simplify parts =
+            case parts of
+                ".." :: _ ->
+                    Err DescendsBelowRoot
+
+                element :: ".." :: rest ->
+                    simplify rest
+
+                "." :: rest ->
+                    simplify rest
+
+                element :: rest ->
+                    Result.map ((::) element) (simplify rest)
+
+                [] ->
+                    Ok []
+    in
+        case path of
+            Valid Absolute parts ->
+                case simplify parts of
+                    Ok simplified ->
+                        Valid Absolute simplified
+
+                    Err err ->
+                        Invalid err
+
+            Valid Relative parts ->
+                path
+
+            Invalid _ ->
+                path
 
 
 dontCare : String -> Path
