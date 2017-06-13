@@ -116,7 +116,7 @@ push : Path -> Path -> Path
 push new base =
     case ( base, new ) of
         ( Valid Absolute baseElements, Valid Relative newElements ) ->
-            Valid Absolute (baseElements ++ newElements)
+            Valid Absolute (baseElements ++ newElements) |> resolveTraversal
 
         ( Valid Relative baseElements, Valid Relative newElements ) ->
             Valid Absolute (baseElements ++ newElements) |> resolveTraversal
