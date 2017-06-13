@@ -134,6 +134,24 @@ pop =
     push (relative "..")
 
 
+(/+) : Path -> String -> Path
+(/+) base new =
+    base |> push (relative new)
+
+
+(/-) : Path -> Int -> Path
+(/-) base count =
+    if count > 0 then
+        (pop base) /- (count - 1)
+    else
+        base
+
+
+root : Path
+root =
+    Valid Absolute []
+
+
 toString : Path -> Result Error String
 toString path =
     case path of
